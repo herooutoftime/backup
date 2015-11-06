@@ -1,0 +1,14 @@
+DOMAIN=domain.com
+HOST=ftp-host.com
+USER=ftp-user
+PASS=ftp-pass
+REMOTE_DIR=/remote_dir/
+REMOTE_URL=/
+LOCAL_DIR=local_dir/
+EXCLUDE=cache/ another_folder/
+EXCLUDE_GLOBAL=*.mp4
+DB_HOST=127.0.0.1 || localhost || IP || hostname
+DB_USER=db_user
+DB_PASS=db_pass
+DB_NAME=db_name
+EMAIL=success@backup.com
