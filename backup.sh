@@ -144,7 +144,7 @@ sendmail() {
     # else
     #   CONTENT_TYPE=''
     # fi
-    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mail -a 'Content-Type: text/html' -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
+    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mailx -a 'Content-Type: text/html' -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
   fi
 }
 
@@ -239,8 +239,7 @@ EOF
 }
 
 zip() {
-  printf "ZIP: ${LOCAL_DIR}\n"
-  printf "Archive: $(basename $LOCAL_DIR)\n"
+  printf "ZIP: ${LOCAL_DIR} -> to archive: $(basename $LOCAL_DIR).tar.gz\n"
   ARCHIVE=$(basename $LOCAL_DIR).tar.gz
   tar -zcf ${LOCAL_BASE_DIR}${ARCHIVE} $LOCAL_DIR
 }
@@ -296,6 +295,4 @@ do
   diff=$(($stop-$start))
   diff_string="$(($diff / 60)) minutes and $(($diff % 60)) seconds"
   sendmail $p "$diff_string"
-
-  # exit
 done
