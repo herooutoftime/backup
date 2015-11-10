@@ -144,7 +144,7 @@ sendmail() {
     # else
     #   CONTENT_TYPE=''
     # fi
-    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mail -a "Content-type: text/html" -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
+    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mail -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)\nContent-Type: text/html")" ${EMAIL}
   fi
 }
 
@@ -238,6 +238,13 @@ EOF
   # remove_sql $1
 }
 
+zip() {
+  printf "ZIP: ${LOCAL_DIR}\n"
+  printf "Archive: $(basename $LOCAL_DIR)\n"
+  ARCHIVE=$(basename $LOCAL_DIR).tar.gz
+  tar -zcf ${LOCAL_BASE_DIR}${ARCHIVE} $LOCAL_DIR
+}
+
 function __wget() {
   : ${DEBUG:=0}
   local URL=$1
@@ -281,6 +288,9 @@ do
   # sql_backup $p
   backup $p
   # remove_traces $p
+
+  # zip it up
+  zip
 
   stop=$(date -u +"%s")
   diff=$(($stop-$start))

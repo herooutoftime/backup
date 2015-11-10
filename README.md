@@ -13,6 +13,12 @@
 
 ## Usage
 
+### Configurations
+* Create a folder, e.g.: `configs`
+* Copy `etc/_config.sample.x` and edit to your needs
+
+**If you don't want a backup to happen prefix it with `_`**
+
 ### Options
 ```
 --config   Config files, glob expression allowed
@@ -33,6 +39,9 @@
 ```
 ./backup.sh --config "config/*.x"
 ```
+
+## Future
+* ZIP it
 
 ## Contributing
 1. Fork it!
