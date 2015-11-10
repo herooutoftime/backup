@@ -144,7 +144,7 @@ sendmail() {
     # else
     #   CONTENT_TYPE=''
     # fi
-    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mail -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)\nContent-Type: text/html")" ${EMAIL}
+    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mail -a 'Content-Type: text/html' -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
   fi
 }
 
