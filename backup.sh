@@ -39,29 +39,15 @@ EOL='\n'
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-
-printf "${RED}Hi, I'm Syncia and will help you take your backups correctly!${NC}\n"
-printf "${BLUE}To disable a backup use '_' as a prefix!${NC}\n"
+printf "\n"
+printf "${RED}Hi, I'm Syncia!\n"
+printf "I will help you take your backups correctly!${NC}\n"
+printf "${RED}To disable a backup use '_' as a prefix!${NC}\n"
 printf "\n"
 
 # FILES="find _config -name "_*" -print0 | xargs -0 ls"
 printf "Get the config(s): ${FILES}\n"
 printf "Stores valid configurations for further usage\n"
-for f in $FILES
-do
-  if [[ ${f##*/} != _* ]] ; #Ignore files starting with '_'
-  then
-    printf "${GREEN}${f##*/}: added to process list${NC}\n"
-    PROCESS+=("$f")
-    # take action on each file. $f store current file name
-    # cat $f
-  # else
-  #   printf "${RED}${f##*/}: starts with '_', so won't be processed!${NC}\n"
-  fi
-done
-
-printf "${bold}${#PROCESS[@]} ${normal}valid configurations were found\n\n"
-# printf '%s\n' "${PROCESS[@]}"
 
 init() {
   HTTPS=
@@ -105,7 +91,7 @@ backup() {
   bye
 EOF
 
-  printf "${BLUE}End backup for ${DOMAIN}${NC}\n"
+  printf "${RED}End backup for ${DOMAIN}${NC}\n"
 }
 
 create_dir() {
@@ -130,9 +116,6 @@ remove_dirs() {
   # cd ${LOCAL_DIR}
   # (ls -tr | head -n 5;ls) | sort | uniq -u | sed -e 's,.*,"&",g' | xargs rm -rf
 }
-# flush_dir() {
-#
-# }
 
 sendmail() {
   printf "Send mail to ${EMAIL}\n"
@@ -146,6 +129,7 @@ sendmail() {
     # fi
     sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mailx -a 'Content-Type: text/html' -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
   fi
+  printf "Email was sent to ${EMAIL}\n"
 }
 
 function join { perl -e '$s = shift @ARGV; print join($s, @ARGV);' "$@"; }
@@ -274,6 +258,23 @@ function __wget() {
   done <&3
   exec 3>&-
 }
+
+for f in $FILES
+do
+  if [[ ${f##*/} != _* ]] ; #Ignore files starting with '_'
+  then
+    printf "${GREEN}${f##*/}: added to process list${NC}\n"
+    PROCESS+=("$f")
+    # take action on each file. $f store current file name
+    # cat $f
+  # else
+  #   printf "${RED}${f##*/}: starts with '_', so won't be processed!${NC}\n"
+  fi
+done
+printf "${FILES[@]}\n"
+printf "${bold}${#PROCESS[@]} ${normal}valid configurations were found\n\n"
+# printf '%s\n' "${PROCESS[@]}"
+exit
 
 printf "${GREEN}Process all valid configurations${NC}\n"
 for p in "${PROCESS[@]}"
