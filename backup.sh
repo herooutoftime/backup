@@ -285,9 +285,9 @@ do
   remove_dirs
   create_dir
 
-  # sql_backup $p
+  sql_backup $p
   backup $p
-  # remove_traces $p
+  remove_traces $p
 
   # zip it up
   zip
