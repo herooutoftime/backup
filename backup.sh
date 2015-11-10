@@ -39,13 +39,13 @@ EOL='\n'
 
 bold=$(tput bold)
 normal=$(tput sgr0)
+
 printf "\n"
 printf "${RED}Hi, I'm Syncia!\n"
 printf "I will help you take your backups correctly!${NC}\n"
 printf "${RED}To disable a backup use '_' as a prefix!${NC}\n"
 printf "\n"
 
-# FILES="find _config -name "_*" -print0 | xargs -0 ls"
 printf "Get the config(s): ${FILES}\n"
 printf "Stores valid configurations for further usage\n"
 
@@ -271,10 +271,7 @@ do
   #   printf "${RED}${f##*/}: starts with '_', so won't be processed!${NC}\n"
   fi
 done
-printf "${FILES[@]}\n"
 printf "${bold}${#PROCESS[@]} ${normal}valid configurations were found\n\n"
-# printf '%s\n' "${PROCESS[@]}"
-exit
 
 printf "${GREEN}Process all valid configurations${NC}\n"
 for p in "${PROCESS[@]}"
