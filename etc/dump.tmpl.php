@@ -213,4 +213,4 @@ $db_name = '$DB_NAME';
 
 $connection = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
 $dump = new MySQLDump($connection);
-$dump->save('dump.sql');
+$dump->save('backup_sql/dump.sql');

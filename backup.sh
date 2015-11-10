@@ -184,6 +184,8 @@ put_sql() {
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
   put -O ${REMOTE_DIR} ${LOCAL_DIR}/dump.php
+  mkdir backup_sql
+  chmod 0777 backup_sql/
   bye
 EOF
 }
@@ -197,7 +199,7 @@ get_sql() {
   printf "Store file to local FS\n"
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
-  get -c ${REMOTE_DIR}dump.sql -o ${LOCAL_DIR}/dump.sql
+  get -c ${REMOTE_DIR}backup_sql/dump.sql -o ${LOCAL_DIR}/dump.sql
   bye
 EOF
 }
@@ -216,7 +218,8 @@ remove_traces () {
   rm ${LOCAL_DIR}/dump.php
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
-  rm ${REMOTE_DIR}/dump.sql ${REMOTE_DIR}/dump.php
+  rm ${REMOTE_DIR}/dump.php
+  rm -rf ${REMOTE_DIR}/backup_sql/
   bye
 EOF
   # remove_sql $1
