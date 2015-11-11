@@ -110,11 +110,10 @@ create_dir() {
 remove_dirs() {
   printf "Remove old directories in ${LOCAL_BASE_DIR}\n"
 
-  rm -r `ls -lt -d -1 $LOCAL_BASE_DIR/{*,.*} | tail -n +6`
-  # rm `ls -t ${LOCAL_BASE_DIR} | tail -n +6`
-  # printf "${LOCAL_DIR}\n"
-  # cd ${LOCAL_DIR}
-  # (ls -tr | head -n 5;ls) | sort | uniq -u | sed -e 's,.*,"&",g' | xargs rm -rf
+  if find $LOCAL_BASE_DIR -maxdepth 0 -empty | read v; then
+    rm -r `ls -lt -d -1 $LOCAL_BASE_DIR/{*,.*} | tail -n +6`
+  fi
+  exit
 }
 
 sendmail() {
@@ -127,7 +126,7 @@ sendmail() {
     # else
     #   CONTENT_TYPE=''
     # fi
-    sed -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mailx -a 'Content-Type: text/html' -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
+    sed -e "s#\$BACKUP_FOLDER#$LOCAL_DIR#g" -e "s/\$FILENAME/$CONFIGFILE_NAME/g" -e "s/\$TIME/$2/g;s/\$PROJECT/$(echo $DOMAIN | sed -e 's/[\/&]/\\&/g')/" etc/message.html | mailx -s "$(echo -e "Backup ${DOMAIN} ($CONFIGFILE_NAME)")" ${EMAIL}
   fi
   printf "Email was sent to ${EMAIL}\n"
 }
@@ -172,8 +171,7 @@ create_sql_file() {
   # printf "Name: ${DB_NAME}\n"
   # printf "User: ${DB_USER}\n"
   # printf "Pass: ${DB_PASS}\n"
-
-  sed -e s/\$DB_HOST/${DB_HOST}/g -e s/\$DB_NAME/${DB_NAME}/g -e s/\$DB_USER/${DB_USER}/g -e s/\$DB_PASS/${DB_PASS}/g -e s/\$DB_PORT/${DB_PORT}/g etc/dump.tmpl.php > ${LOCAL_DIR}/dump.php
+  sed -e s#\$SQL_DIR#${SQL_DIR}#g -e s/\$DB_HOST/${DB_HOST}/g -e s/\$DB_NAME/${DB_NAME}/g -e s/\$DB_USER/${DB_USER}/g -e s/\$DB_PASS/${DB_PASS}/g -e s/\$DB_PORT/${DB_PORT}/g etc/dump.tmpl.php > ${LOCAL_DIR}/dump.php
   printf "END - Create SQL file from template\n"
 }
 
@@ -184,8 +182,8 @@ put_sql() {
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
   put -O ${REMOTE_DIR} ${LOCAL_DIR}/dump.php
-  mkdir backup_sql
-  chmod 0777 backup_sql/
+  # mkdir ${REMOTE_DIR}backup_sql
+  # chmod 0777 ${REMOTE_DIR}backup_sql/
   bye
 EOF
 }
@@ -196,10 +194,12 @@ call_url() {
 }
 
 get_sql() {
-  printf "Store file to local FS\n"
+  printf "Store file to local FS:\n"
+  printf "${SQL_DIR}/dump.sql > ${LOCAL_DIR}/dump.sql\n"
+
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
-  get -c ${REMOTE_DIR}backup_sql/dump.sql -o ${LOCAL_DIR}/dump.sql
+  get -c ${REMOTE_DIR}${SQL_DIR}dump.sql -o ${LOCAL_DIR}/dump.sql
   bye
 EOF
 }
@@ -219,10 +219,8 @@ remove_traces () {
   lftp -u ${USER},${PASS} ${HOST} << EOF
   set ssl:verify-certificate no
   rm ${REMOTE_DIR}/dump.php
-  rm -rf ${REMOTE_DIR}/backup_sql/
   bye
 EOF
-  # remove_sql $1
 }
 
 zip() {
