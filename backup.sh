@@ -113,7 +113,6 @@ remove_dirs() {
   if find $LOCAL_BASE_DIR -maxdepth 0 -empty | read v; then
     rm -r `ls -lt -d -1 $LOCAL_BASE_DIR/{*,.*} | tail -n +6`
   fi
-  exit
 }
 
 sendmail() {
