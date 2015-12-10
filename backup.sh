@@ -96,7 +96,8 @@ EOF
 
 create_dir() {
   printf "${LOCAL_DIR}\n"
-  LOCAL_DIR="${LOCAL_DIR}/$(date +"%Y-%m-%d-%H-%M-%S")"
+  LOCAL_DIR="${LOCAL_DIR}/$(date +"%Y-%m-%d")"
+  # LOCAL_DIR="${LOCAL_DIR}/$(date +"%Y-%m-%d-%H-%M-%S")"
   mkdir ${LOCAL_DIR}
 }
 
